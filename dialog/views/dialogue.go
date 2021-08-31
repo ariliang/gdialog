@@ -29,7 +29,6 @@ func Dialogue(c echo.Context) error {
 	// get data session
 	data_sess, _ := utils.GetSession(c, "data")
 	// read history from session
-	fmt.Println(data_sess.Values)
 	history, _ := data_sess.Values["history"].([]string)
 	history = history[utils.Max(len(history)-8, 0):]             // last 4 round dialogue
 	history = append(history, fmt.Sprintf("pat:%s", r.Question)) // append "pat:"+question to history

@@ -23,17 +23,21 @@ func Login(c echo.Context) error {
 	if !u.ValidLogin() {
 		return c.JSON(http.StatusOK, utils.Error("Password does not match"))
 	}
-	// login session, 7d max age
-	sess, _ := utils.Session(c, "session", "/", 3600*24*7)
-	utils.SetSession(c, sess, map[string]interface{}{
-		"username":  u.Username,
-		"logged_in": true,
-	})
+	if sess, _ := utils.GetSession(c, "session"); sess.Values["username"] == nil || sess.Values["logged_in"] == false {
+		// login session, 7d max age
+		sess, _ = utils.Session(c, "session", "/", 3600*24*7)
+		utils.SetSession(c, sess, map[string]interface{}{
+			"username":  u.Username,
+			"logged_in": true,
+		})
+	}
 	// history session, 20min max age
-	data_sess, _ := utils.Session(c, "data", "/", 60*20)
-	utils.SetSession(c, data_sess, map[string]interface{}{
-		"history": []string{},
-	})
+	if data_sess, _ := utils.GetSession(c, "data"); data_sess.Values["history"] == nil {
+		data_sess, _ = utils.Session(c, "data", "/", 60*20)
+		utils.SetSession(c, data_sess, map[string]interface{}{
+			"history": []string{},
+		})
+	}
 	return c.JSON(http.StatusOK, utils.Success(map[string]interface{}{
 		"username": u.Username,
 	}))
