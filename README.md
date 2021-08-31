@@ -1,2 +1,2 @@
 # gdialog
-Dialogue system demo backend implemented in Golang.
+Dialogue system demo backend implemented in golang & echo & gorm.
