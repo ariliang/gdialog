@@ -1,7 +1,7 @@
 package views
 
 import (
-	"fmt"
+	"encoding/json"
 	"gdialog/utils"
 	"net/http"
 
@@ -11,6 +11,8 @@ import (
 type ReqJson struct {
 	Question string `json:"question"`
 }
+
+type HistoryList []map[string]string
 
 func Dialogue(c echo.Context) error {
 	// get status session whether user logged in
@@ -26,17 +28,19 @@ func Dialogue(c echo.Context) error {
 	if r.Question == "" {
 		return c.JSON(http.StatusOK, utils.Error("Input quetion"))
 	}
+	history := HistoryList{}
 	// get data session
 	data_sess, _ := utils.GetSession(c, "data")
 	// read history from session
-	history, _ := data_sess.Values["history"].([]string)
-	history = history[utils.Max(len(history)-8, 0):]             // last 4 round dialogue
-	history = append(history, fmt.Sprintf("pat:%s", r.Question)) // append "pat:"+question to history
+	json.Unmarshal(data_sess.Values["history"].([]byte), &history)
+	history = history[utils.Max(len(history)-8, 0):]                                   // last 4 round dialogue
+	history = append(history, map[string]string{"type": "pat", "content": r.Question}) // append "pat:"+question to history
 	// generate dialog
 	history, ans := utils.GenDialog(history)
 	// save session
+	hist_byte, _ := json.Marshal(history)
 	utils.SetSession(c, data_sess, map[string]interface{}{
-		"history": history,
+		"history": hist_byte,
 	})
 	return c.JSON(http.StatusOK, utils.Success(map[string]interface{}{
 		"answer": ans,
