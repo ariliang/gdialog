@@ -1,8 +1,8 @@
 package dialog
 
 import (
+	"gdialog/dialog/controllers"
 	"gdialog/dialog/models"
-	"gdialog/dialog/views"
 	"gdialog/global"
 
 	"github.com/labstack/echo/v4"
@@ -15,9 +15,9 @@ func init() {
 
 // routes in dialog
 func Register(e *echo.Echo) {
-	e.GET("/logout", views.Logout)
+	e.GET("/logout", controllers.Logout)
 
-	e.POST("/login", views.Login)
-	e.POST("/register", views.Register)
-	e.POST("/dialogue", views.Dialogue)
+	e.POST("/login", controllers.Login)
+	e.POST("/register", controllers.Register)
+	e.POST("/dialogue", controllers.Dialogue)
 }

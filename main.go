@@ -20,8 +20,8 @@ func StartServer() {
 	e := echo.New()
 	// set session
 	e.Use(middleware.Recover())
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("ibiauhsihsow"))))
-	// register routes
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("lfijei3243j2"))))
+	// register apps
 	dialog.Register(e)
 	// start server
 	e.Logger.Info(e.Start(fmt.Sprintf("%s:%d", server_conf.Host, server_conf.Port)))
