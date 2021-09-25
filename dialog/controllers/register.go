@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// POST(json)
+// POST /register
 func Register(c echo.Context) error {
 	// bind json
 	u := new(models.User)

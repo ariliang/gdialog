@@ -9,17 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type (
-	InfoSession struct {
-		Username string `json:"username"`
-		LoggedIn bool   `json:"logged_in"`
-	}
-	DataSession struct {
-		History []map[string]string `json:"history"`
-	}
-)
-
-// POST(json)
+// POST /login
 func Login(c echo.Context) error {
 	// bind User
 	u := new(models.User)
@@ -34,7 +24,6 @@ func Login(c echo.Context) error {
 	if !u.ValidLogin() {
 		return c.JSON(http.StatusOK, utils.Error("Password does not match"))
 	}
-
 	if sess, _ := utils.GetSession(c, "session"); sess.Values["username"] == nil {
 		// login session, 7d max age
 		sess, _ = utils.Session(c, "session", "/", 3600*24*7)

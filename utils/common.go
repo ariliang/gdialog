@@ -1,6 +1,10 @@
 package utils
 
 import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -118,4 +122,17 @@ func ClearSession(sess *sessions.Session) {
 	for k := range sess.Values {
 		delete(sess.Values, k)
 	}
+}
+
+// Response
+// =====================
+
+func ParseJsonBodyToMap(body io.ReadCloser) map[string]interface{} {
+	// parse json body from response to map
+	byteRes, _ := ioutil.ReadAll(body)
+	fmt.Println(string(byteRes))
+	var j interface{}
+	json.Unmarshal(byteRes, &j)
+	resp_data := j.(map[string]interface{})
+	return resp_data
 }

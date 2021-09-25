@@ -7,20 +7,22 @@ import (
 	"time"
 )
 
-type User struct {
-	UserID     int64   `gorm:"autoIncement;primaryKey" json:"user_id"`
-	Username   string  `gorm:"unique;not null" json:"username"`
-	Password   string  `gorm:"not null" json:"password"`
-	Phone      string  `json:"phone"`
-	Age        uint16  `json:"age"`
-	Gender     string  `json:"gender"`
-	Height     float32 `json:"height"`
-	Weight     float32 `json:"weight"`
-	CreateTime int64   `gorm:"column:create_time"`
-	Deleted    bool
-	// for models.Disease use
-	Disease string `gorm:"-" json:"disease"`
-}
+type (
+	User struct {
+		UserID     int64   `gorm:"autoIncement;primaryKey" json:"user_id"`
+		Username   string  `gorm:"unique;not null" json:"username"`
+		Password   string  `gorm:"not null" json:"password"`
+		Phone      string  `json:"phone"`
+		Age        uint16  `json:"age"`
+		Gender     string  `json:"gender"`
+		Height     float32 `json:"height"`
+		Weight     float32 `json:"weight"`
+		CreateTime int64   `gorm:"column:create_time"`
+		Deleted    bool
+		// for models.Disease use
+		Disease string `gorm:"-" json:"disease"`
+	}
+)
 
 func (u User) TableName() string {
 	return "user"

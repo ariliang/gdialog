@@ -1,0 +1,10 @@
+[server]
+host = ""
+port = 5000
+
+[web]
+session_secret = "f"
+
+[wx_config]
+appid = "f"
+appid_secret = "f"
