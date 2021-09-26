@@ -5,6 +5,10 @@ port = 5000
 [web]
 session_secret = "f"
 
+[dialog_core]
+host = "http://localhost:5001"
+
 [wx_config]
 appid = "f"
 appid_secret = "f"
+auth_simu = true

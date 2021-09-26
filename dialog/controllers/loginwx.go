@@ -46,8 +46,8 @@ func LoginWX(c echo.Context) error {
 	resp, _ := http.Get(auth_req)
 	var resp_byte []byte
 	// debug on to enable simulated auth
-	debug := false
-	if !debug {
+	auth_simu := global.Config.WX.AuthSimu
+	if !auth_simu {
 		resp_byte, _ = ioutil.ReadAll(resp.Body)
 	} else {
 		resp_byte = utils.SimulateWXAuth(req_data.Code)

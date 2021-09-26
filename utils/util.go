@@ -9,13 +9,12 @@ import (
 
 // Given dialogue history list
 // Return generated dialogue
-func GenDialog(history []map[string]string) ([]map[string]string, string) {
+func GenDialog(dialog_core_host string, history []map[string]string) ([]map[string]string, string) {
 	data := map[string]interface{}{
 		"history": history,
 	}
 	byte_data, _ := json.Marshal(data)
-	dialogue_server_url := "http://127.0.0.1:5001/"
-	resp, _ := http.Post(dialogue_server_url, "application/json", bytes.NewReader(byte_data))
+	resp, _ := http.Post(dialog_core_host, "application/json", bytes.NewReader(byte_data))
 	byte_ans, _ := ioutil.ReadAll(resp.Body)
 	resp_json := map[string]string{}
 	json.Unmarshal(byte_ans, &resp_json)

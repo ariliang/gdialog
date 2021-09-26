@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"gdialog/global"
 	"gdialog/utils"
 	"net/http"
 
@@ -51,7 +52,7 @@ func Dialogue(c echo.Context) error {
 	history = history[utils.Max(len(history)-8, 0):]                                   // last 4 round dialogue
 	history = append(history, map[string]string{"type": "pat", "content": r.Question}) // append "pat:"+question to history
 	// generate dialog
-	history, ans := utils.GenDialog(history)
+	history, ans := utils.GenDialog(global.Config.DialogCore.Host, history)
 	// save session
 	hist_byte, _ := json.Marshal(history)
 	utils.SetSession(c, data_sess, map[string]interface{}{
@@ -93,7 +94,7 @@ func DialogueWX(c echo.Context) error {
 	history = history[utils.Max(len(history)-8, 0):]                                   // last 4 round dialogue
 	history = append(history, map[string]string{"type": "pat", "content": r.Question}) // append "pat:"+question to history
 	// generate dialog
-	history, ans := utils.GenDialog(history)
+	history, ans := utils.GenDialog(global.Config.DialogCore.Host, history)
 	// save session
 	hist_byte, _ := json.Marshal(history)
 	utils.SetSession(c, data_sess, map[string]interface{}{
