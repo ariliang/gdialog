@@ -47,7 +47,8 @@ func In(dst []interface{}, src interface{}) bool {
 // return success msg
 func Success(m map[string]interface{}) map[string]interface{} {
 	msg := map[string]interface{}{
-		"status": "success",
+		"status":  "success",
+		"collect": "true",
 	}
 	for k, v := range m {
 		msg[k] = v
@@ -58,8 +59,9 @@ func Success(m map[string]interface{}) map[string]interface{} {
 // return error msg
 func Error(s string) map[string]interface{} {
 	msg := map[string]interface{}{
-		"status": "error",
-		"msg":    s,
+		"status":  "error",
+		"collect": "true",
+		"msg":     s,
 	}
 	return msg
 }
