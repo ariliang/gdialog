@@ -13,7 +13,8 @@ import (
 type (
 	// request json data
 	ReqJson struct {
-		Question string `json:"question"`
+		Question    string `json:"question"`
+		DialogModel string `json:"dialog_model"`
 	}
 
 	// history list, list of map
@@ -63,7 +64,9 @@ func Dialogue(c echo.Context) error {
 	}))
 }
 
-// POST /dialoguewx
+// POST /dialoguewx/gastro
+// POST /dialoguewx/diabetes
+// POST /dialoguewx/mixed-model
 func DialogueWX(c echo.Context) error {
 	// get status session whether user logged in
 	if sess, err := utils.GetSession(c, "session"); err != nil || sess.Values["openid"] == nil || sess.Values["logged_in"] == false {
@@ -81,6 +84,11 @@ func DialogueWX(c echo.Context) error {
 		return c.JSON(http.StatusOK, utils.Error("Input quetion"))
 	}
 
+	// no question just return
+	if r.DialogModel != "" && !utils.In([]interface{}{"gastro", "diabetes", "mixed"}, r.DialogModel) {
+		return c.JSON(http.StatusOK, utils.Error("All Dialogue Model: gastro, diabetes, mixed"))
+	}
+
 	history := HistoryList{}
 	// get data session
 	data_sess, err := utils.GetSession(c, "data")
@@ -93,8 +101,19 @@ func DialogueWX(c echo.Context) error {
 	json.Unmarshal(data_sess.Values["history"].([]byte), &history)
 	history = history[utils.Max(len(history)-8, 0):]                                   // last 4 round dialogue
 	history = append(history, map[string]string{"type": "pat", "content": r.Question}) // append "pat:"+question to history
-	// generate dialog
-	history, ans := utils.GenDialog(global.Config.DialogCore.Host, history)
+
+	ans := ""
+
+	if r.DialogModel == "gastro" {
+		// model "gastro"
+		history, ans = utils.GenDialog(global.Config.DialogCore.Host+"/gastro", history)
+	} else if r.DialogModel == "diabetes" {
+		// model "diabetes"
+		history, ans = utils.GenDialog(global.Config.DialogCore.Host+"/diabetes", history)
+	} else if r.DialogModel == "mixed" {
+		// model "mixed"
+		history, ans = utils.GenDialog(global.Config.DialogCore.Host+"/mixed", history)
+	}
 	// save session
 	hist_byte, _ := json.Marshal(history)
 	utils.SetSession(c, data_sess, map[string]interface{}{
