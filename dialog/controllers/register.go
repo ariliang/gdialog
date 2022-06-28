@@ -41,5 +41,5 @@ func Register(c echo.Context) error {
 		// save Disease
 		d.Save()
 	}
-	return c.JSON(http.StatusOK, utils.Success(map[string]interface{}{"username": u.Username}))
+	return c.JSON(http.StatusOK, utils.Success(map[string]any{"username": u.Username}))
 }

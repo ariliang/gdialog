@@ -50,7 +50,7 @@ func LoginWX(c echo.Context) error {
 	if !auth_simu {
 		resp_byte, _ = ioutil.ReadAll(resp.Body)
 	} else {
-		resp_byte = utils.SimulateWXAuth(req_data.Code)
+		resp_byte = SimulateWXAuth(req_data.Code)
 	}
 	// parse json body to struct
 	resp_data := respData{}
@@ -76,13 +76,13 @@ func LoginWX(c echo.Context) error {
 	if sess, _ := utils.GetSession(c, "session"); sess.Values["openid"] == nil {
 		// login session, 7d max age
 		sess, _ = utils.Session(c, "session", "/", 3600*24*7)
-		utils.SetSession(c, sess, map[string]interface{}{
+		utils.SetSession(c, sess, map[string]any{
 			"openid":      u.Username,
 			"session_key": resp_data.SessionKey,
 			"logged_in":   true,
 		})
 	} else if sess.Values["logged_in"] == false {
-		utils.SetSession(c, sess, map[string]interface{}{
+		utils.SetSession(c, sess, map[string]any{
 			"logged_in": true,
 		})
 	}
@@ -90,13 +90,13 @@ func LoginWX(c echo.Context) error {
 	if data_sess, err := utils.GetSession(c, "data"); err != nil || data_sess.Values["history"] == nil {
 		data_sess, _ = utils.Session(c, "data", "/", 60*20)
 		// serialize dict list
-		byte_data, _ := json.Marshal(HistoryList{})
-		utils.SetSession(c, data_sess, map[string]interface{}{
+		byte_data, _ := json.Marshal(DialogueHistory{})
+		utils.SetSession(c, data_sess, map[string]any{
 			"history": byte_data,
 		})
 	}
 	// login succeed
-	return c.JSON(http.StatusOK, utils.Success(map[string]interface{}{
+	return c.JSON(http.StatusOK, utils.Success(map[string]any{
 		"username": u.Username,
 	}))
 }

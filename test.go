@@ -7,6 +7,7 @@ import (
 	"gdialog/global"
 	"gdialog/utils"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"reflect"
 	"strings"
@@ -34,14 +35,14 @@ func SliceTest() {
 
 	fmt.Println(strings.Join(s, ";"))
 	fmt.Println("============================")
-	history, _ := map[string]interface{}{}["history"].([]string)
+	history, _ := map[string]any{}["history"].([]string)
 	history = history[utils.Max(len(history)-8, 0):]
 	history = append(history, "hello")
 	fmt.Println(history)
 }
 
 func RequestTest() {
-	data := map[string]interface{}{
+	data := map[string]any{
 		"history": []string{"hello"},
 	}
 	byte_data, _ := json.Marshal(data)
@@ -107,5 +108,6 @@ func InheritanceTest() {
 }
 
 func Test() {
-	InheritanceTest()
+	m := map[string]string{"a": "aa"}
+	log.Println(m)
 }

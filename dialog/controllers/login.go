@@ -27,7 +27,7 @@ func Login(c echo.Context) error {
 	if sess, _ := utils.GetSession(c, "session"); sess.Values["username"] == nil {
 		// login session, 7d max age
 		sess, _ = utils.Session(c, "session", "/", 3600*24*7)
-		utils.SetSession(c, sess, map[string]interface{}{
+		utils.SetSession(c, sess, map[string]any{
 			"username":  u.Username,
 			"logged_in": true,
 		})
@@ -40,11 +40,11 @@ func Login(c echo.Context) error {
 		data_sess, _ = utils.Session(c, "data", "/", 60*20)
 		// serialize dict list
 		byte_data, _ := json.Marshal([]map[string]string{})
-		utils.SetSession(c, data_sess, map[string]interface{}{
+		utils.SetSession(c, data_sess, map[string]any{
 			"history": byte_data,
 		})
 	}
-	return c.JSON(http.StatusOK, utils.Success(map[string]interface{}{
+	return c.JSON(http.StatusOK, utils.Success(map[string]any{
 		"username": u.Username,
 	}))
 }

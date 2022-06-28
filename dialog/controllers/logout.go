@@ -14,7 +14,7 @@ func Logout(c echo.Context) error {
 	if err != nil || sess.Values["username"] != username || sess.Values["logged_in"] == false {
 		return c.JSON(http.StatusOK, utils.Error("Did not log in"))
 	}
-	utils.SetSession(c, sess, map[string]interface{}{
+	utils.SetSession(c, sess, map[string]any{
 		"logged_in": false,
 	})
 	return c.JSON(http.StatusOK, utils.Success(nil))
@@ -26,7 +26,7 @@ func LogoutWX(c echo.Context) error {
 	if err != nil || sess.Values["openid"] == nil || sess.Values["logged_in"] == false {
 		return c.JSON(http.StatusOK, utils.Error("Did not log in"))
 	}
-	utils.SetSession(c, sess, map[string]interface{}{
+	utils.SetSession(c, sess, map[string]any{
 		"logged_in": false,
 	})
 	return c.JSON(http.StatusOK, utils.Success(nil))

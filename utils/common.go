@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,7 +34,7 @@ func Max(a, b int) (res int) {
 // =========================
 
 // B in A
-func In(dst []interface{}, src interface{}) bool {
+func In(dst []any, src any) bool {
 	for _, d := range dst {
 		if src == d {
 			return true
@@ -45,8 +47,8 @@ func In(dst []interface{}, src interface{}) bool {
 // =========================
 
 // return success msg
-func Success(m map[string]interface{}) map[string]interface{} {
-	msg := map[string]interface{}{
+func Success(m map[string]any) map[string]any {
+	msg := map[string]any{
 		"status":  "success",
 		"collect": "true",
 	}
@@ -57,8 +59,8 @@ func Success(m map[string]interface{}) map[string]interface{} {
 }
 
 // return error msg
-func Error(s string) map[string]interface{} {
-	msg := map[string]interface{}{
+func Error(s string) map[string]any {
+	msg := map[string]any{
 		"status":  "error",
 		"collect": "true",
 		"msg":     s,
@@ -104,7 +106,7 @@ func Session(c echo.Context, s string, path string, maxAge int) (*sessions.Sessi
 }
 
 // Args: (context, session, path, maxAge)
-func SetSession(c echo.Context, sess *sessions.Session, kv map[string]interface{}) {
+func SetSession(c echo.Context, sess *sessions.Session, kv map[string]any) {
 	for k, v := range kv {
 		sess.Values[k] = v
 	}
@@ -129,12 +131,18 @@ func ClearSession(sess *sessions.Session) {
 // Response
 // =====================
 
-func ParseJsonBodyToMap(body io.ReadCloser) map[string]interface{} {
+func ParseJsonBodyToMap(body io.ReadCloser) map[string]any {
 	// parse json body from response to map
 	byteRes, _ := ioutil.ReadAll(body)
 	fmt.Println(string(byteRes))
-	var j interface{}
+	var j any
 	json.Unmarshal(byteRes, &j)
-	resp_data := j.(map[string]interface{})
+	resp_data := j.(map[string]any)
 	return resp_data
+}
+
+func GenerateMD5(str string) string {
+	h := md5.New()
+	h.Write([]byte(str))
+	return hex.EncodeToString(h.Sum(nil))
 }

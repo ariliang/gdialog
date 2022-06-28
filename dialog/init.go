@@ -18,6 +18,7 @@ func Register(e *echo.Echo) {
 	// e.POST("/register", controllers.Register)
 	// e.POST("/dialogue", controllers.Dialogue)
 	e.POST("/dialoguewx", controllers.DialogueWX)
+	e.POST("/dialoguewx/choose", controllers.DialogueWXChoose)
 }
 
 func init() {

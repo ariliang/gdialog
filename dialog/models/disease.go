@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var DiseaseList = []interface{}{"糖尿病", "高血压"}
+var DiseaseList = []any{"糖尿病", "高血压"}
 
 type Disease struct {
 	ID      int64
