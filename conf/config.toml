@@ -7,6 +7,7 @@ session_secret = "f"
 
 [dialog_core]
 host = "http://localhost:5001"
+dialog_model = ["gastro", "diabetes"]
 
 [wx_config]
 appid = "f"
