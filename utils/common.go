@@ -4,9 +4,9 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -34,13 +34,23 @@ func Max(a, b int) (res int) {
 // =========================
 
 // B in A
-func In(dst []any, src any) bool {
+func In(src any, dst []any) bool {
 	for _, d := range dst {
 		if src == d {
 			return true
 		}
 	}
 	return false
+}
+
+// []string to []any
+func StrListToAny(src []string) []any {
+	dst := []any{}
+	for _, v := range src {
+		dst = append(dst, v)
+	}
+
+	return dst
 }
 
 // message
@@ -134,7 +144,7 @@ func ClearSession(sess *sessions.Session) {
 func ParseJsonBodyToMap(body io.ReadCloser) map[string]any {
 	// parse json body from response to map
 	byteRes, _ := ioutil.ReadAll(body)
-	fmt.Println(string(byteRes))
+	log.Println(string(byteRes))
 	var j any
 	json.Unmarshal(byteRes, &j)
 	resp_data := j.(map[string]any)

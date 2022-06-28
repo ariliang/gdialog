@@ -34,7 +34,7 @@ func (d *Disease) Valid() (b bool, msg string) {
 			continue
 		}
 		// not in given disease list
-		if !utils.In(DiseaseList, v) {
+		if !utils.In(v, DiseaseList) {
 			return false, fmt.Sprintf("Check %s disease", v)
 		}
 		new_ds = append(new_ds, v)

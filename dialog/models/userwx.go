@@ -44,7 +44,7 @@ func (u *UserWX) GetUser() error {
 
 func (u UserWX) Validate() (b bool, err string) {
 	// gender
-	if !utils.In([]any{0, 1}, u.Gender) {
+	if !utils.In(u.Gender, []any{0, 1}) {
 		return false, "Check your gender"
 	}
 	// phone

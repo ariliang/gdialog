@@ -7,6 +7,7 @@ import (
 	"gdialog/global"
 	"gdialog/utils"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -65,7 +66,9 @@ func LoginWX(c echo.Context) error {
 		Username: req_data.Username,
 		Gender:   req_data.Gender,
 	}
-	fmt.Println(u)
+
+	log.Println(u)
+
 	// create user if not existed
 	if !u.Exists() {
 		if err := u.Save(); err != nil {
@@ -86,15 +89,33 @@ func LoginWX(c echo.Context) error {
 			"logged_in": true,
 		})
 	}
-	// history session, 20min max age
-	if data_sess, err := utils.GetSession(c, "data"); err != nil || data_sess.Values["history"] == nil {
+
+	// data session
+	data_sess, err := utils.GetSession(c, "data")
+
+	// 20min max age
+	if err != nil {
 		data_sess, _ = utils.Session(c, "data", "/", 60*20)
+	}
+
+	if data_sess.Values["history"] == nil {
 		// serialize dict list
 		byte_data, _ := json.Marshal(DialogueHistory{})
 		utils.SetSession(c, data_sess, map[string]any{
 			"history": byte_data,
 		})
+
 	}
+
+	if data_sess.Values["mixed_history"] == nil {
+		// serialize dict list
+		byte_data, _ := json.Marshal(DialogueHistory{})
+		utils.SetSession(c, data_sess, map[string]any{
+			"mixed_history": byte_data,
+		})
+
+	}
+
 	// login succeed
 	return c.JSON(http.StatusOK, utils.Success(map[string]any{
 		"username": u.Username,

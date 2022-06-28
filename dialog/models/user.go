@@ -66,7 +66,7 @@ func (u User) Validate() (b bool, err string) {
 		return false, "Input 11-digit mobile phone number"
 	}
 	// gender
-	if u.Gender != "" && !utils.In([]any{"M", "F", "O"}, u.Gender) {
+	if u.Gender != "" && !utils.In(u.Gender, []any{"M", "F", "O"}) {
 		return false, "Check your gender, values are M, F, O"
 	}
 	// height

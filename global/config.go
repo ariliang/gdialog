@@ -24,7 +24,8 @@ type (
 	}
 
 	dialogCoreToml struct {
-		Host string
+		Host        string
+		DialogModel []string `toml:"dialog_model"`
 	}
 
 	wxToml struct {

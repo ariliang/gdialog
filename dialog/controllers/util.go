@@ -13,15 +13,17 @@ type (
 	ReqDialogueCore struct {
 		DialogModel string `json:"dialog_model"`
 		History     any    `json:"history"`
-		Question    string `json:"question"`
 	}
 
-	RespDialogueCore map[string]string
+	RespDialogueCore struct {
+		Status string            `json:"status"`
+		Result map[string]string `json:"result"`
+	}
 )
 
 // Given dialogue history list
 // Return generated dialogue
-func GenDialog(dialog_core_host string, history DialogueHistory, question string, dialog_model string) (DialogueHistory, string) {
+func GenDialog(dialog_core_host string, history DialogueHistory, dialog_model string) (DialogueHistory, map[string]string) {
 
 	/*
 		dialogue core post data
@@ -29,14 +31,16 @@ func GenDialog(dialog_core_host string, history DialogueHistory, question string
 			"dialog_model": "gastro",
 			"history": {
 				"gastro": [{"type": "pat", "content", ""}, {"type": "doc", "content": ""}]
-			},
-			"question": ""
+			}
 		}
 
 		dialogue core return data
 		{
 			"status": "success",
-			"result": "ans"
+			"result": {
+				"gastro": "",
+				"diabetes": ""
+			}
 		}
 	*/
 
@@ -44,7 +48,6 @@ func GenDialog(dialog_core_host string, history DialogueHistory, question string
 	req_dialog := ReqDialogueCore{
 		dialog_model,
 		history,
-		question,
 	}
 
 	resp_dialog := RespDialogueCore{}
@@ -57,22 +60,22 @@ func GenDialog(dialog_core_host string, history DialogueHistory, question string
 	resp_buf, _ := ioutil.ReadAll(resp_data.Body)
 	json.Unmarshal(resp_buf, &resp_dialog)
 
-	if resp_dialog["status"] != "success" || resp_dialog["result"] == "" {
-		return history, ""
+	if resp_dialog.Status != "success" || resp_dialog.Result == nil {
+		return history, map[string]string{}
 	}
 
-	ans := resp_dialog["result"]
-	history[dialog_model] = append(history[dialog_model], DialogueUtterence{"pat", question})
-	history[dialog_model] = append(history[dialog_model], DialogueUtterence{"doc", ans})
+	for dm, ans := range resp_dialog.Result {
+		history[dm] = append(history[dm], DialogueUtterence{"doc", ans})
+	}
 
-	return history, ans
+	return history, resp_dialog.Result
 }
 
 // simulate wx auth
 func SimulateWXAuth(code any) []byte {
 	code_list := []any{"123", "456", "789"}
 	res := map[string]any{}
-	if utils.In(code_list, code) {
+	if utils.In(code, code_list) {
 		res["session_key"] = "session_key_fjdks"
 		res["openid"] = "openid_fkdsfkjd" + code.(string)
 	} else {
